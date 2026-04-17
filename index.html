@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Викторина: Знаковые места и литература Татарстана</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f7fa;
+    margin: 0;
+    padding: 20px;
+  }
+  header {
+    background-color: #00796b;
+    color: white;
+    padding: 15px;
+    text-align: center;
+  }
+  h1 {
+    margin: 0;
+  }
+  .question-block {
+    background-color: #ffffff;
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  .question-title {
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+  .answers {
+    margin-top: 10px;
+  }
+  .answer {
+    margin: 5px 0;
+  }
+  button {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background-color: #00796b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #b2dfdb;
+    cursor: not-allowed;
+  }
+  #resultContainer {
+    display: none;
+    margin-top: 30px;
+    text-align: center;
+  }
+  #finalScore {
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Викторина: Знаковые места и литература Татарстана</h1>
+</header>
+
+<div class="question-block" id="q1">
+  <div class="question-title">1. Где находится музей-квартира Габдуллы Тукая в Казани?</div>
+  <div class="answers">
+    <div class="answer"><input type="radio" name="q1" value="ул. Тукая, д.15" /> ул. Тукая, д.15</div>
+    <div class="answer"><input type="radio" name="q1" value="Кремль Казани" /> Кремль Казани</div>
+    <div class="answer"><input type="radio" name="q1" value="ул. Павлюхина" /> ул. Павлюхина</div>
+  </div>
+  <button onclick="checkAnswer('q1', 'ул. Тукая, д.15')">Проверить</button>
+</div>
+
+<div class="question-block" id="q2">
+  <div class="question-title">2. Где установлен памятник на площади Мусы Джалиля?</div>
+  <div class="answers">
+    <div class="answer"><input type="radio" name="q2" value="Муса Джалиль" /> Муса Джалиль</div>
+    <div class="answer"><input type="radio" name="q2" value="Габдулла Тукай" /> Габдулла Тукай</div>
+    <div class="answer"><input type="radio" name="q2" value="Фатих Көчәй" /> Фатих Көчәй</div>
+  </div>
+  <button onclick="checkAnswer('q2', 'Муса Джалиль')">Проверить</button>
+</div>
+
+<div class="question-block" id="q3">
+  <div class="question-title">3. В каком музее хранятся рукописи Габдуллы Тукая?</div>
+  <div class="answers">
+    <div class="answer"><input type="radio" name="q3" value="Казанский краеведческий музей" /> Казанский краеведческий музей</div>
+    <div class="answer"><input type="radio" name="q3" value="Музей-квартира Тукая" /> Музей-квартира Тукая</div>
+    <div class="answer"><input type="radio" name="q3" value="Музей-усадьба Щипки" /> Музей-усадьба Щипки</div>
+  </div>
+  <button onclick="checkAnswer('q3', 'Музей-квартира Тукая')">Проверить</button>
+</div>
+
+<div class="question-block" id="q4">
+  <div class="question-title">4. Кто автор сказки «Шүрәле»?</div>
+  <div class="answers">
+    <div class="answer"><input type="radio" name="q4" value="Габдулла Тукай" /> Габдулла Тукай</div>
+    <div class="answer"><input type="radio" name="q4" value="Муса Җәлил" /> Муса Җәлил</div>
+    <div class="answer"><input type="radio" name="q4" value="Фатих Көчәй" /> Фатих Көчәй</div>
+  </div>
+  <button onclick="checkAnswer('q4', 'Габдулла Тукай')">Проверить</button>
+</div>
+
+<div class="question-block" id="q5">
+  <div class="question-title">5. Какие из этих мест входят в Казанский Кремль?</div>
+  <div class="answers">
+    <div class="answer"><input type="radio" name="q5" value="Богородицкая церковь" /> Богородицкая церковь</div>
+    <div class="answer"><input type="radio" name="q5" value="Чичканская башня" /> Чичканская башня</div>
+    <div class="answer"><input type="radio" name="q5" value="Все вышеперечисленное" /> Все вышеперечисленное</div>
+  </div>
+  <button onclick="checkAnswer('q5', 'Все вышеперечисленное')">Проверить</button>
+</div>
+
+<div id="resultContainer">
+  <h2>Результат</h2>
+  <div id="finalScore"></div>
+  <button onclick="restartQuiz()">Пройти еще раз</button>
+</div>
+
+<script>
+  const totalQuestions = 5;
+  let correctCount = 0;
+
+  function disableButtons(questionId) {
+    const qDiv = document.getElementById(questionId);
+    const buttons = qDiv.querySelectorAll('button');
+    buttons.forEach(btn => btn.disabled = true);
+  }
+
+  function checkAnswer(questionId, correctAnswer) {
+    const qDiv = document.getElementById(questionId);
+    const options = qDiv.querySelectorAll('input[type=radio]');
+    let userAnswer = '';
+    options.forEach(opt => {
+      if (opt.checked) userAnswer = opt.value;
+      opt.disabled = true; // блокируем после ответа
+    });
+    // найти правильный ответ
+    if (userAnswer === correctAnswer) {
+      correctCount++;
+    }
+    disableButtons(questionId);
+    checkAllAnswered();
+  }
+
+  function checkAllAnswered() {
+    const answered = document.querySelectorAll('div[id^="q"] input[type=radio]:disabled').length;
+    if (answered === totalQuestions * 3) {
+      showResult();
+    }
+  }
+
+  function showResult() {
+    document.getElementById('resultContainer').style.display = 'block';
+    document.getElementById('finalScore').textContent = `Вы правильно ответили на ${correctCount} из ${totalQuestions} вопросов!`;
+  }
+
+  function restartQuiz() {
+    // Перезагружает страницу
+    location.reload();
+  }
+</script>
+
+</body>
+</html>
